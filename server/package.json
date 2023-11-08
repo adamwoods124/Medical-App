@@ -1,5 +1,5 @@
 {
-  "name": "med",
+  "name": "server",
   "version": "1.0.0",
   "description": "med service MERN project",
   "main": "server.js",
