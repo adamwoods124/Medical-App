@@ -24,17 +24,16 @@ const getAllCases = asyncHandler(async (req, res) => {
 // @access Private
 const createCase = asyncHandler(async (req, res) => {
     const { users, patientName, roomNum, symptoms, notes } = req.body
-    console.log(req.body)
     // Confirm data
     if (!users || !patientName || !roomNum) {
         return res.status(400).json({ message: 'Required fields missing' })
     }
 
     // Check for duplicate title
-    const duplicate = await Case.findOne({ patientName, roomNum }).lean().exec()
+    const duplicate = await Case.findOne({ roomNum }).lean().exec()
 
     if (duplicate) {
-        return res.status(409).json({ message: 'Duplicate patient' })
+        return res.status(409).json({ message: 'Room occupied' })
     }
 
     // Create and store the new case 
@@ -66,10 +65,10 @@ const updateCase = asyncHandler(async (req, res) => {
     }
 
     // Check for duplicate
-    const duplicate = await Case.findOne({ patientName, roomNum }).lean().exec()
+    const duplicate = await Case.findOne({ roomNum }).lean().exec()
     // Allow updates to original note
     if (duplicate && duplicate?._id.toString() !== id) {
-        return res.status(409).json({ message: 'Duplicate patient' })
+        return res.status(409).json({ message: 'Room already occupied' })
     }
 
     _case.users = users
