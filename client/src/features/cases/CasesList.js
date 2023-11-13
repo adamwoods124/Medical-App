@@ -1,14 +1,14 @@
-import { useGetNotesQuery } from './notesApiSlice'
-import Note from './Note'
+import { useGetCasesQuery } from './casesApiSlice'
+import Case from './Case'
 
-const NotesList = () => {
+const CasesList = () => {
     const {
-        data: notes,
+        data: cases,
         isLoading,
         isSuccess,
         isError,
         error
-    } = useGetNotesQuery(undefined, {
+    } = useGetCasesQuery(undefined, {
         pollingInterval: 15000,
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true
@@ -23,21 +23,23 @@ const NotesList = () => {
     }
 
     if (isSuccess) {
-        const { ids } = notes
+        const { ids } = cases
 
         const tableContent = ids?.length
-            ? ids.map(noteId => <Note key={noteId} noteId={noteId} />)
+            ? ids.map(caseId => <Case key={caseId} caseId={caseId} />)
             : null
 
         content = (
             <table className="table table--notes">
                 <thead className="table__thead">
                     <tr>
-                        <th scope="col" className="table__th note__status">Username</th>
+                        <th scope="col" className='table__th note__status'>Status</th>
+                        
+                        <th scope="col" className="table__th note__title">Patient name</th>
+                        <th scope="col" className="table__th note__title">Room number</th>
+                        <th scope="col" className="table__th note__username">Assigned to</th>
                         <th scope="col" className="table__th note__created">Created</th>
                         <th scope="col" className="table__th note__updated">Updated</th>
-                        <th scope="col" className="table__th note__title">Title</th>
-                        <th scope="col" className="table__th note__username">Owner</th>
                         <th scope="col" className="table__th note__edit">Edit</th>
                     </tr>
                 </thead>
@@ -50,4 +52,4 @@ const NotesList = () => {
 
     return content
 }
-export default NotesList
+export default CasesList

@@ -4,12 +4,12 @@ import Public from './components/Public'
 import Login from './features/auth/Login'
 import DashLayout from './components/DashLayout'
 import Welcome from './features/auth/Welcome'
-import NotesList from './features/notes/NotesList'
+import CasesList from './features/cases/CasesList'
 import UsersList from './features/users/UsersList'
 import EditUser from './features/users/EditUser'
 import NewUserForm from './features/users/NewUserForm'
-import EditNote from './features/notes/EditNote'
-import NewNote from './features/notes/NewNote'
+import EditCase from './features/cases/EditCase'
+import NewCase from './features/cases/NewCase'
 import Prefetch from './features/auth/Prefetch'
 
 function App() {
@@ -31,10 +31,10 @@ function App() {
             <Route path="create" element={<NewUserForm />} />
           </Route>
 
-          <Route path="notes">
-            <Route index element={<NotesList />} />
-            <Route path=":id" element={<EditNote />} />
-            <Route path="create" element={<NewNote />} />
+          <Route path="cases">
+            <Route index element={<CasesList />} />
+            <Route path=":id" element={<EditCase />} />
+            <Route path="create" element={<NewCase />} />
           </Route>
 
         </Route>{/* end dash */}

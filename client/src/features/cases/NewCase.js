@@ -1,12 +1,12 @@
 import { useSelector } from 'react-redux'
 import { selectAllUsers } from '../users/usersApiSlice'
-import NewNoteForm from './NewNoteForm'
+import NewCaseForm from './NewCaseForm'
 
-const NewNote = () => {
+const NewCase = () => {
     const users = useSelector(selectAllUsers)
 
-    const content = users ? <NewNoteForm users={users} /> : <p>Loading...</p>
+    const content = users ? <NewCaseForm users={users} /> : <p>Loading...</p>
 
     return content
 }
-export default NewNote
+export default NewCase

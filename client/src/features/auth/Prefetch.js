@@ -1,5 +1,5 @@
 import { store } from '../../app/store'
-import { notesApiSlice } from '../notes/notesApiSlice'
+import { casesApiSlice } from '../cases/casesApiSlice'
 import { usersApiSlice } from '../users/usersApiSlice'
 import { useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
@@ -7,12 +7,12 @@ import { Outlet } from 'react-router-dom'
 const Prefetch = () => {
     useEffect(() => {
         console.log('subscribing')
-        const notes = store.dispatch(notesApiSlice.endpoints.getNotes.initiate())
+        const cases = store.dispatch(casesApiSlice.endpoints.getCases.initiate())
         const users = store.dispatch(usersApiSlice.endpoints.getUsers.initiate())
         
         return () => {
             console.log('unsubscribing')
-            notes.unsubscribe()
+            cases.unsubscribe()
             users.unsubscribe()
         }
     }, [])

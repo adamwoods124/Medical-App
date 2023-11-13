@@ -1,20 +1,28 @@
 const mongoose = require('mongoose')
 const AutoIncrement = require('mongoose-sequence-generator')(mongoose)
 
-const noteSchema = new mongoose.Schema(
+const caseSchema = new mongoose.Schema(
     {
-        user: {
+        users: [{
             type: mongoose.Schema.Types.ObjectId,
             required: true,
             ref: 'User'
-        }, 
-        title: {
+        }], 
+        patientName: {
             type: String,
             required: true
-        }, 
-        text: {
+        },
+        roomNum: {
+            type: Number,
+            required: true,
+        },
+        symptoms: {
             type: String,
-            required: true
+            default: "",
+        },
+        notes: {
+            type: String,
+            default: "",
         },
         completed: {
             type: Boolean,
@@ -26,10 +34,10 @@ const noteSchema = new mongoose.Schema(
     }
 )
 
-noteSchema.plugin(AutoIncrement, {
-    inc_field: 'case',
+caseSchema.plugin(AutoIncrement, {
+    inc_field: 'caseNum',
     id: 'caseNums',
     start_seq: 1000
 })
 
-module.exports = mongoose.model('Note', noteSchema)
+module.exports = mongoose.model('Case', caseSchema)
