@@ -8,7 +8,7 @@ const CasesList = () => {
         isSuccess,
         isError,
         error
-    } = useGetCasesQuery(undefined, {
+    } = useGetCasesQuery('casesList', {
         pollingInterval: 15000,
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true
@@ -40,7 +40,7 @@ const CasesList = () => {
                         <th scope="col" className="table__th note__username">Assigned to</th>
                         <th scope="col" className="table__th note__created">Created</th>
                         <th scope="col" className="table__th note__updated">Updated</th>
-                        <th scope="col" className="table__th note__edit">Edit</th>
+                        <th scope="col" className="table__th note__edit">View/Edit</th>
                     </tr>
                 </thead>
                 <tbody>

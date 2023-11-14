@@ -21,6 +21,9 @@ const EditCaseForm = ({ _case, users }) => {
 
     const navigate = useNavigate()
 
+    console.log("in caseform")
+    console.log("users", users)
+    console.log("case", _case)
     const [usernames, setUsernames] = useState(_case.users)
     const [patientName, setPatientName] = useState(_case.patientName)
     const [roomNum, setRoomNum] = useState(_case.roomNum)
@@ -53,8 +56,8 @@ const EditCaseForm = ({ _case, users }) => {
         setUsernames(values)
     }
 
-    const validUsernamesClass = !Boolean(usernames.length >= 2) ? 'form__input--incomplete' : ''
-    const canSave = [patientName, roomNum, symptoms, notes].every(Boolean) && !isLoading && Boolean(usernames.length >= 2)
+    const validUsernamesClass = !Boolean(usernames.length) ? 'form__input--incomplete' : ''
+    const canSave = [usernames.length, patientName, roomNum, symptoms, notes].every(Boolean) && !isLoading 
 
     //console.log(usernames)
     const onSaveClicked = async () => {

@@ -15,7 +15,6 @@ const NewCaseForm = ({ users }) => {
     const navigate = useNavigate()
 
     const [usernames, setUsernames] = useState([])
-    //const [usernames, setUsernames] = useState('')
     const [patientName, setPatientName] = useState('')
     const [roomNum, setRoomNum] = useState('')
     const [symptoms, setSymptoms] = useState('')
@@ -45,7 +44,7 @@ const NewCaseForm = ({ users }) => {
     const onSymptomsChanged = e => setSymptoms(e.target.value)
     const onNotesChanged = e => setNotes(e.target.value)
     
-    const canSave = [patientName, roomNum, symptoms, notes].every(Boolean) && !isLoading && usernames.length >= 2
+    const canSave = [usernames.length, patientName, roomNum, symptoms, notes].every(Boolean) && !isLoading
     
     const onSaveClicked = async (e) => {
         e.preventDefault()
