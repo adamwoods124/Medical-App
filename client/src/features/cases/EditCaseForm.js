@@ -21,9 +21,6 @@ const EditCaseForm = ({ _case, users }) => {
 
     const navigate = useNavigate()
 
-    console.log("in caseform")
-    console.log("users", users)
-    console.log("case", _case)
     const [usernames, setUsernames] = useState(_case.users)
     const [patientName, setPatientName] = useState(_case.patientName)
     const [roomNum, setRoomNum] = useState(_case.roomNum)

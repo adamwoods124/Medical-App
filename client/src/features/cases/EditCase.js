@@ -9,9 +9,8 @@ const EditCase = () => {
 
     const _case = useSelector(state => selectCaseById(state, id))
     const users = useSelector(selectAllUsers)
-    console.log("case", _case)
 
-    const content = (_case && users) && (!_case.undefined && !users.undefined) ? <EditCaseForm _case={_case} users={users} /> : <p>Loading...</p>
+    const content = _case && users ? <EditCaseForm _case={_case} users={users} /> : <p>Loading...</p>
     return content
 }
 export default EditCase

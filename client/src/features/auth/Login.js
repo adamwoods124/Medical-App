@@ -75,7 +75,7 @@ const Login = () => {
                         value={username}
                         onChange={handleUsernameInput}
                         autoComplete='off'
-                        required='true'
+                        required={true}
                     />
                     <label htmlFor='password'>Password:</label>
                     <input
@@ -84,7 +84,7 @@ const Login = () => {
                         id='password'
                         onChange={handlePasswordInput}
                         value={password}
-                        required='true'
+                        required={true}
                     />
                     <button className='form__submit-button'>Sign in</button>
 
