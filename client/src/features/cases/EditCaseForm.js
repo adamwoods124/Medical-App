@@ -59,7 +59,6 @@ const EditCaseForm = ({ _case, users }) => {
     //console.log(usernames)
     const onSaveClicked = async () => {
         if (canSave) {
-            console.log(usernames)
             await updateCase({ id: _case.id, users: usernames, patientName, roomNum, symptoms, notes, completed })
         }
     }
@@ -71,14 +70,15 @@ const EditCaseForm = ({ _case, users }) => {
     const created = new Date(_case.createdAt).toLocaleString('en-US', { day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })
     const updated = new Date(_case.updatedAt).toLocaleString('en-US', { day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })
 
-    const options = Object.values(users).map(user => {
-        return (
-            <option
+    const options = users.map(user => {
+        return user.active || _case.users.includes(user.id) ? (
+            <option 
                 key={user.id}
                 value={user.id}
             > {user.username}</option>
-        )
+        ) : null
     })
+
 
     const errClass = (isError || isDelError) ? "errmsg" : "offscreen"
     //const validTitleClass = !title ? 'form__input--incomplete' : ''

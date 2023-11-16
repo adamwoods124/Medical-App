@@ -6,10 +6,13 @@ import DashLayout from './components/DashLayout'
 import Welcome from './features/auth/Welcome'
 import CasesList from './features/cases/CasesList'
 import UsersList from './features/users/UsersList'
+import PatientsList from './features/patients/PatientsList'
 import EditUser from './features/users/EditUser'
+import EditPatient from './features/patients/EditPatient'
 import NewUserForm from './features/users/NewUserForm'
 import EditCase from './features/cases/EditCase'
 import NewCase from './features/cases/NewCase'
+import NewPatient from './features/patients/NewPatient'
 import Prefetch from './features/auth/Prefetch'
 import PersistLogin from './features/auth/PersistLogin'
 
@@ -37,6 +40,12 @@ function App() {
             <Route index element={<CasesList />} />
             <Route path=":id" element={<EditCase />} />
             <Route path="create" element={<NewCase />} />
+          </Route>
+
+          <Route path="patients">
+            <Route index element={<PatientsList />} />
+            <Route path=":id" element={<EditPatient />} />
+            <Route path="create" element={<NewPatient />} />
           </Route>
 
         </Route>{/* end dash */}

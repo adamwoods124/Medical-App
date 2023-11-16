@@ -23,9 +23,9 @@ const getAllCases = asyncHandler(async (req, res) => {
 // @route POST /cases
 // @access Private
 const createCase = asyncHandler(async (req, res) => {
-    const { users, patientName, roomNum, symptoms, notes } = req.body
+    const { users, patient, roomNum, symptoms, notes } = req.body
     // Confirm data
-    if (!users || !patientName || !roomNum) {
+    if (!users || !patient || !roomNum ) {
         return res.status(400).json({ message: 'Required fields missing' })
     }
 
@@ -37,7 +37,7 @@ const createCase = asyncHandler(async (req, res) => {
     }
 
     // Create and store the new case 
-    const _case = await Case.create({ users, patientName, roomNum, symptoms, notes })
+    const _case = await Case.create({ users, patient, roomNum, symptoms, notes })
 
     if (_case) { // Created 
         return res.status(201).json({ message: 'New case created' })
@@ -51,10 +51,10 @@ const createCase = asyncHandler(async (req, res) => {
 // @route PATCH /case
 // @access Private
 const updateCase = asyncHandler(async (req, res) => {
-    const { id, users, patientName, roomNum, symptoms, notes, completed } = req.body
+    const { id, users, patient, roomNum, symptoms, notes, completed } = req.body
 
     // Confirm data
-    if (!id || !users || !patientName || !roomNum || !symptoms || !notes || typeof completed !== 'boolean') {
+    if (!id || !users || !patient || !roomNum || !symptoms || !notes || typeof completed !== 'boolean') {
         return res.status(400).json({ message: 'All fields are required' })
     }
 
@@ -72,7 +72,7 @@ const updateCase = asyncHandler(async (req, res) => {
     }
 
     _case.users = users
-    _case.patientName = patientName
+    _case.patient = patient
     _case.roomNum = roomNum
     _case.symptoms = symptoms
     _case.notes = notes
@@ -80,7 +80,7 @@ const updateCase = asyncHandler(async (req, res) => {
 
     const updatedCase = await _case.save()
 
-    res.json({ message: `Info for patient ${updatedCase.patientName} updated`})
+    res.json({ message: `Info for patient in room ${roomNum} updated`})
 })
 
 // @desc Delete a case

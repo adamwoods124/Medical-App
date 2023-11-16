@@ -7,7 +7,6 @@ import { selectCaseById } from './casesApiSlice'
 
 const Case = ({ caseId }) => {
     const _case = useSelector(state => selectCaseById(state, caseId))
-    
     const navigate = useNavigate()
 
     if (_case) {

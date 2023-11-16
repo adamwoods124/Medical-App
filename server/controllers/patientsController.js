@@ -17,6 +17,7 @@ const getAllPatients = asyncHandler(async (req, res) => {
         const assignedUsers = (await User.find({ _id: { $in: patient.assignedUsers }}).lean().exec()).map(user => user.username)
         return { ...patient, assignedUsers }
     }))
+    console.log("getallpatients", patientsWithAssignedUsers)
     res.json(patientsWithAssignedUsers)
 })
 

@@ -353,12 +353,15 @@ tr {
     font-size: 1.5rem;
   }
 
-  /*.table--notes {
-    grid-template-columns: repeat(3, 1fr) 2fr repeat(2, 1fr);
+  .table--users {
+    grid-template-columns: repeat(3, 1fr);
   }
-  */
+  
+  .table--patients {
+    grid-template-columns: repeat(3, 1fr) 2.5fr 1fr;
+  }
 
-  .table--notes {
+  .table--cases {
     grid-template-columns: repeat(7, 1fr);
   }
 

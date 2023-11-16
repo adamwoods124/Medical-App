@@ -1,14 +1,14 @@
 import { useSelector } from 'react-redux'
 import { selectAllUsers } from '../users/usersApiSlice'
 import NewCaseForm from './NewCaseForm'
-import NewUserForm from '../users/NewUserForm'
+import { selectAllPatients } from '../patients/patientsApiSlice'
 
 const NewCase = () => {
     const users = useSelector(selectAllUsers)
-    console.log(users)
+    const patients = useSelector(selectAllPatients)
     if (!users?.length) return <p>Not currently available</p>
 
-    const content =  <NewCaseForm users={users} /> 
+    const content =  <NewCaseForm users={users} patients={patients}/> 
 
     return content
 }

@@ -8,9 +8,10 @@ const caseSchema = new mongoose.Schema(
             required: true,
             ref: 'User'
         }], 
-        patientName: {
-            type: String,
-            required: true
+        patient: {
+            type: mongoose.Schema.Types.ObjectId,
+            required: true,
+            ref: 'Patient',
         },
         roomNum: {
             type: Number,
@@ -26,7 +27,7 @@ const caseSchema = new mongoose.Schema(
         },
         completed: {
             type: Boolean,
-            default: false
+            default: false,
         } 
     },
     {
