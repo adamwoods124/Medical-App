@@ -29,13 +29,14 @@ app.use('/', require('./routes/root'))
 app.use('/auth', require('./routes/authRoutes'))
 app.use('/users', require('./routes/userRoutes'))
 app.use('/cases', require('./routes/caseRoutes'))
+app.use('/patients', require('./routes/patientRoutes'))
 
 app.all('*', (req, res) => {
     res.status(404)
     if (req.accepts('html')) {
         res.sendFile(path.join(__dirname, 'views', '404.html'))
     } else if (req.accepts('json')) {
-        res.json({ message: 'Error 404: Resource not found'})
+        res.json({ message: '404 Not Found' })
     } else {
         res.type('txt').send('404 Not Found')
     }
@@ -50,5 +51,5 @@ mongoose.connection.once('open', () => {
 
 mongoose.connection.on('error', err => {
     console.log(err)
-    logEvents(`${err.no}: ${err.code}\t${err.syscall}\t${err.hostname}`, 'mongoErrorLog.log')
+    logEvents(`${err.no}: ${err.code}\t${err.syscall}\t${err.hostname}`, 'mongoErrLog.log')
 })

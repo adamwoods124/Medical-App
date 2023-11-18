@@ -3,8 +3,9 @@ import { useAddCaseMutation } from './casesApiSlice'
 import { useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSave } from '@fortawesome/free-solid-svg-icons'
+import NewPatientForm from '../patients/NewPatientForm'
 
-const NewCaseForm = ({ users }) => {
+const NewCaseForm = ({ users, patients }) => {
     const [addCase, {
         isLoading,
         isSuccess, 
@@ -15,15 +16,16 @@ const NewCaseForm = ({ users }) => {
     const navigate = useNavigate()
 
     const [usernames, setUsernames] = useState([])
-    const [patientName, setPatientName] = useState('')
+    const [patient, setPatient] = useState(patients[0].id)
     const [roomNum, setRoomNum] = useState('')
     const [symptoms, setSymptoms] = useState('')
     const [notes, setNotes] = useState('')
+    const [hidden, setHidden] = useState(true)
 
     useEffect(() => {
         if (isSuccess) {
-            setUsernames('')
-            setPatientName('')
+            setUsernames([])
+            setPatient('')
             setRoomNum('')
             setSymptoms('')
             setNotes('')
@@ -39,34 +41,48 @@ const NewCaseForm = ({ users }) => {
         setUsernames(values)
     }
 
-    const onPatientNameChanged = e => setPatientName(e.target.value)
+    const onPatientChanged = e => setPatient(e.target.value)
     const onRoomNumChanged = e => setRoomNum(e.target.value)
     const onSymptomsChanged = e => setSymptoms(e.target.value)
     const onNotesChanged = e => setNotes(e.target.value)
-    
-    const canSave = [usernames.length, patientName, roomNum, symptoms, notes].every(Boolean) && !isLoading
+    const onHiddenChanged = () =>  setHidden(hidden => !hidden)
+    const canSave = [usernames.length, patient, roomNum, symptoms, notes].every(Boolean) && !isLoading
     
     const onSaveClicked = async (e) => {
         e.preventDefault()
         if (canSave) {
-            await addCase({ users: usernames, patientName, roomNum, symptoms, notes })
+            await addCase({ users: usernames, patient, roomNum, symptoms, notes }).unwrap()
         }
     }
 
     const options = users.map(user => {
-        return (
+        return user.active ? (
             <option 
                 key={user.id}
                 value={user.id}
             > {user.username}</option>
+        ) : null
+    })
+
+    const patientOptions = patients.map(patient => {
+        return (
+            <option 
+                key={patient.id}
+                value={patient.id}
+            > {patient.name}</option>
         )
     })
 
     const errClass = isError ? "errmsg" : "offscreen"
-
+    const showPatientForm = hidden ? "hidden" : ""
+    const createOrHideString = hidden ? "or create patient" : "hide create patient"
+    
     const content = (
         <>
             <p className={errClass}>{error?.data?.message}</p>
+            <div className={showPatientForm}>
+                <NewPatientForm inCaseForm={true} onHiddenChanged={onHiddenChanged}/>
+            </div>
 
             <form className='form' onSubmit={onSaveClicked}>
                 <div className = 'form__title-row'>
@@ -81,19 +97,25 @@ const NewCaseForm = ({ users }) => {
                         </button>
                     </div>
                 </div>
-                <label className='form__label' htmlFor='title'>
-                    Patient name:
-                </label>
-                <input 
-                    //className={`form__input ${validTitleClass}`}
-                    className='form__input'
-                    id="patientName"
-                    name="patientName"
-                    type="text"
-                    autoComplete='off'
-                    value={patientName}
-                    onChange={onPatientNameChanged}
-                />
+                <div>
+                    <label className='form__label--group' htmlFor='patient'>
+                        Patient: &emsp; &emsp;   
+                    </label>
+                    <label className='form__label--group form__label--group-select' onClick={onHiddenChanged}>
+                        {createOrHideString}
+                    </label>   
+                </div>
+                <select
+                    id='patient'
+                    name='patient'
+                    className='form__select'
+                    value={patient}
+                    onChange={onPatientChanged}
+                >
+                    {patientOptions}
+                </select>
+                
+                
 
                 <label className='form__label' htmlFor='text'>
                     Room number:

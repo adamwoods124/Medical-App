@@ -10,7 +10,7 @@ const USERS_REGEX = /^\/dash\/users(\/)?$/
 const DashHeader = () => {
 
     const navigate = useNavigate()
-    const { pathName } = useLocation()
+    const { pathname } = useLocation()
 
     const [sendLogout, {
         isLoading,
@@ -28,7 +28,7 @@ const DashHeader = () => {
     if (isError) return <p>Error: {error.data?.message}</p>
 
     let dashClass = null
-    if (!DASH_REGEX.test(pathName) && !CASES_REGEX.test(pathName) && !USERS_REGEX.test(pathName)) {
+    if (!DASH_REGEX.test(pathname) && !CASES_REGEX.test(pathname) && !USERS_REGEX.test(pathname)) {
         dashClass = 'dash-header__container--small'
     }
 

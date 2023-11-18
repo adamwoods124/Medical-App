@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSave, faTrashCan } from '@fortawesome/free-solid-svg-icons'
 
-const EditCaseForm = ({ _case, users }) => {
+const EditCaseForm = ({ _case, users, patients }) => {
     
     const [updateCase, {
         isLoading,
@@ -22,7 +22,7 @@ const EditCaseForm = ({ _case, users }) => {
     const navigate = useNavigate()
 
     const [usernames, setUsernames] = useState(_case.users)
-    const [patientName, setPatientName] = useState(_case.patientName)
+    const [patient, setPatient] = useState(_case.patient)
     const [roomNum, setRoomNum] = useState(_case.roomNum)
     const [symptoms, setSymptoms] = useState(_case.symptoms)
     const [notes, setNotes] = useState(_case.notes)
@@ -31,7 +31,7 @@ const EditCaseForm = ({ _case, users }) => {
     useEffect(() => {
         if (isSuccess || isDelSuccess) {
             setUsernames('')
-            setPatientName('')
+            setPatient('')
             setRoomNum('')
             setSymptoms('')
             setNotes('')
@@ -39,7 +39,7 @@ const EditCaseForm = ({ _case, users }) => {
         } 
     }, [isSuccess, isDelSuccess, navigate])   
 
-    const onPatientNameChanged = e => setPatientName(e.target.value)
+    const onPatientChanged = e => setPatient(e.target.value)
     const onRoomNumChanged = e => setRoomNum(e.target.value)
     const onSymptomsChanged = e => setSymptoms(e.target.value)
     const onNotesChanged = e => setNotes(e.target.value)
@@ -54,13 +54,12 @@ const EditCaseForm = ({ _case, users }) => {
     }
 
     const validUsernamesClass = !Boolean(usernames.length) ? 'form__input--incomplete' : ''
-    const canSave = [usernames.length, patientName, roomNum, symptoms, notes].every(Boolean) && !isLoading 
+    const canSave = [usernames.length, patient, roomNum, symptoms, notes].every(Boolean) && !isLoading 
 
     //console.log(usernames)
     const onSaveClicked = async () => {
         if (canSave) {
-            console.log(usernames)
-            await updateCase({ id: _case.id, users: usernames, patientName, roomNum, symptoms, notes, completed })
+            await updateCase({ id: _case.id, users: usernames, patient, roomNum, symptoms, notes, completed })
         }
     }
 
@@ -71,14 +70,24 @@ const EditCaseForm = ({ _case, users }) => {
     const created = new Date(_case.createdAt).toLocaleString('en-US', { day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })
     const updated = new Date(_case.updatedAt).toLocaleString('en-US', { day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })
 
-    const options = Object.values(users).map(user => {
-        return (
-            <option
+    const options = users.map(user => {
+        return user.active || _case.users.includes(user.id) ? (
+            <option 
                 key={user.id}
                 value={user.id}
             > {user.username}</option>
+        ) : null
+    })
+
+    const patientOptions = patients.map(patient => {
+        return (
+            <option 
+                key={patient.id}
+                value={patient.id}
+            > {patient.name}</option>
         )
     })
+
 
     const errClass = (isError || isDelError) ? "errmsg" : "offscreen"
     //const validTitleClass = !title ? 'form__input--incomplete' : ''
@@ -110,18 +119,18 @@ const EditCaseForm = ({ _case, users }) => {
                         </button>
                     </div>
                 </div>
-                <label className="form__label" htmlFor="note-title">
-                    Patient name:
+                <label className='form__label' htmlFor='patient'>
+                    Patient:
                 </label>
-                <input
-                    className="form__input"
-                    id="patientName"
-                    name="patientName"
-                    type="text"
-                    autoComplete="off"
-                    value={patientName}
-                    onChange={onPatientNameChanged}
-                />
+                <select
+                    id='patient'
+                    name='patient'
+                    className='form__select'
+                    value={patient}
+                    onChange={onPatientChanged}
+                >
+                    {patientOptions}
+                </select>
                 <label className="form__label" htmlFor="note-title">
                     Room number:
                 </label>

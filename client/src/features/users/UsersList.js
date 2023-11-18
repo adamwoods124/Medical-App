@@ -50,4 +50,5 @@ const UsersList = () => {
 
     return content
 }
+
 export default UsersList

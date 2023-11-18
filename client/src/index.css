@@ -274,6 +274,17 @@ tr {
   align-items: center;
 }
 
+.form__input--noedit {
+  padding: 0.5em;
+  border-radius: 15px;
+  background-color: var(--TABLE-BGCOLOR);
+  color: var(--TABLE-COLOR)
+}
+
+.form__label--group {
+  padding-right: 0.5em;
+}
+
 .form__input,
 .form__submit-button {
   padding: 0.5em;
@@ -307,6 +318,10 @@ tr {
   gap: 0.5em;
   position: absolute;
   right: 0.5em;
+}
+
+.hidden {
+  display: none;
 }
 
 .form__row {
@@ -353,13 +368,29 @@ tr {
     font-size: 1.5rem;
   }
 
-  /*.table--notes {
-    grid-template-columns: repeat(3, 1fr) 2fr repeat(2, 1fr);
+  .table--users {
+    grid-template-columns: repeat(3, 1fr);
   }
-  */
+  
+  .table--patients {
+    grid-template-columns: repeat(3, 1fr) 2.5fr 1fr;
+  }
 
-  .table--notes {
+  .table--cases {
     grid-template-columns: repeat(7, 1fr);
+  }
+
+  .table__cell-caselink {
+    color: #000 !important;
+  }
+
+  .table__cell-caselink:hover {
+    text-decoration: underline;
+  }
+
+  .form__label--group-select:hover {
+    text-decoration: underline;
+    cursor: pointer;
   }
 
   .note__created,

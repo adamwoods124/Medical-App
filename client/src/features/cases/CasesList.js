@@ -30,11 +30,10 @@ const CasesList = () => {
             : null
 
         content = (
-            <table className="table table--notes">
+            <table className="table table--cases">
                 <thead className="table__thead">
                     <tr>
                         <th scope="col" className='table__th note__status'>Status</th>
-                        
                         <th scope="col" className="table__th note__title">Patient name</th>
                         <th scope="col" className="table__th note__title">Room number</th>
                         <th scope="col" className="table__th note__username">Assigned to</th>
