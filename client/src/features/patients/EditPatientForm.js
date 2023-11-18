@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSave, faTrashCan } from '@fortawesome/free-solid-svg-icons'
 
-const EditPatientForm = ({ patient, users, cases }) => {
+const EditPatientForm = ({ patient }) => {
     
     const [updatePatient, {
         isLoading,
@@ -22,67 +22,31 @@ const EditPatientForm = ({ patient, users, cases }) => {
     const navigate = useNavigate()
 
     const [name, setName] = useState(patient.name)
-    const [birthday, setBirthday] = useState(patient.birthday)
-    const [assignedUsers, setAssignedUsers] = useState(patient.assignedUsers)
-    const [history, setHistory] = useState(patient.history)
+    const [birthday, setBirthday] = useState(new Date(patient.birthday).toISOString().split("T")[0])
 
     useEffect(() => {
         if (isSuccess || isDelSuccess) {
             setName('')
             setBirthday(new Date(0))
-            setAssignedUsers([])
             navigate('/dash/patients')
         }
     }, [isSuccess, isDelSuccess, navigate])
 
     const onNameChanged = e => setName(e.target.value)
     const onBirthdayChanged = e => setBirthday(e.target.value)
-    
-    const onAssignedUsersChanged = e => {
-        const values = Array.from(
-            e.target.selectedOptions,
-            (option) => option.value
-        )
-        setAssignedUsers(values)
-    }
-
-    const onHistoryChanged = e => {
-        const values = Array.from(
-            e.target.selectedOptions,
-            (option) => option.value
-        )
-        setHistory(values)
-    }
 
     const dateMax = new Date().toISOString().split("T")[0]
     const canSave = [name, birthday].every(Boolean) && !isLoading
     
     const onSaveClicked = async () => {
         if (canSave) {
-            await updatePatient({ id: patient.id, name, birthday, assignedUsers, history})
+            await updatePatient({ id: patient.id, name, birthday })
         }
     }
 
     const onDeleteClicked = async () => {
         await deletePatient({ id: patient.id })
     }
-
-    const assignedUsersOptions = users.map(user => {
-        return user.active ? (
-            <option 
-                key={user.id}
-                value={user.id}
-            > {user.username}</option>
-        ) : null
-    })
-
-    const patientHistory = cases.map(_case => {
-        return patient.history.includes(_case.id) ? (
-        <li>
-            {new Date(_case.createdAt).toISOString().split('T')[0]}: {_case.symptoms}
-        </li>
-        ) : null
-    })
 
     const errClass = (isError || isDelError) ? "errmsg" : "offscreen"
 
@@ -136,26 +100,6 @@ const EditPatientForm = ({ patient, users, cases }) => {
                     value={birthday}
                     onChange={onBirthdayChanged}
                 />
-                <label className='form__label' htmlFor='assignedUsers'>
-                    Assigned to patient:
-                </label>
-                <select 
-                    id='assignedUsers'
-                    name='assignedUsers'
-                    className='form__select'
-                    multiple={true}
-                    size='3'
-                    value={assignedUsers}
-                    onChange={onAssignedUsersChanged}
-                >
-                    {assignedUsersOptions}
-                </select>
-                <label className='form__label' htmlFor='history'>
-                    Previous cases:
-                </label>
-                <div>
-                    {patientHistory}
-                </div>
             </form>
         </>
     )

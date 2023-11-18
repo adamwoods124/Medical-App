@@ -3,6 +3,7 @@ import { useAddCaseMutation } from './casesApiSlice'
 import { useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSave } from '@fortawesome/free-solid-svg-icons'
+import NewPatientForm from '../patients/NewPatientForm'
 
 const NewCaseForm = ({ users, patients }) => {
     const [addCase, {
@@ -15,14 +16,15 @@ const NewCaseForm = ({ users, patients }) => {
     const navigate = useNavigate()
 
     const [usernames, setUsernames] = useState([])
-    const [patient, setPatient] = useState('')
+    const [patient, setPatient] = useState(patients[0].id)
     const [roomNum, setRoomNum] = useState('')
     const [symptoms, setSymptoms] = useState('')
     const [notes, setNotes] = useState('')
+    const [hidden, setHidden] = useState(true)
 
     useEffect(() => {
         if (isSuccess) {
-            setUsernames('')
+            setUsernames([])
             setPatient('')
             setRoomNum('')
             setSymptoms('')
@@ -43,13 +45,13 @@ const NewCaseForm = ({ users, patients }) => {
     const onRoomNumChanged = e => setRoomNum(e.target.value)
     const onSymptomsChanged = e => setSymptoms(e.target.value)
     const onNotesChanged = e => setNotes(e.target.value)
-    
+    const onHiddenChanged = () =>  setHidden(hidden => !hidden)
     const canSave = [usernames.length, patient, roomNum, symptoms, notes].every(Boolean) && !isLoading
     
     const onSaveClicked = async (e) => {
         e.preventDefault()
         if (canSave) {
-            await addCase({ users: usernames, patient, roomNum, symptoms, notes })
+            await addCase({ users: usernames, patient, roomNum, symptoms, notes }).unwrap()
         }
     }
 
@@ -72,10 +74,15 @@ const NewCaseForm = ({ users, patients }) => {
     })
 
     const errClass = isError ? "errmsg" : "offscreen"
-
+    const showPatientForm = hidden ? "hidden" : ""
+    const createOrHideString = hidden ? "or create patient" : "hide create patient"
+    
     const content = (
         <>
             <p className={errClass}>{error?.data?.message}</p>
+            <div className={showPatientForm}>
+                <NewPatientForm inCaseForm={true} onHiddenChanged={onHiddenChanged}/>
+            </div>
 
             <form className='form' onSubmit={onSaveClicked}>
                 <div className = 'form__title-row'>
@@ -90,9 +97,14 @@ const NewCaseForm = ({ users, patients }) => {
                         </button>
                     </div>
                 </div>
-                <label className='form__label' htmlFor='patient'>
-                    Patient:
-                </label>
+                <div>
+                    <label className='form__label--group' htmlFor='patient'>
+                        Patient: &emsp; &emsp;   
+                    </label>
+                    <label className='form__label--group form__label--group-select' onClick={onHiddenChanged}>
+                        {createOrHideString}
+                    </label>   
+                </div>
                 <select
                     id='patient'
                     name='patient'
@@ -102,6 +114,8 @@ const NewCaseForm = ({ users, patients }) => {
                 >
                     {patientOptions}
                 </select>
+                
+                
 
                 <label className='form__label' htmlFor='text'>
                     Room number:

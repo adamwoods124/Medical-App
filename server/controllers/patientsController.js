@@ -1,6 +1,5 @@
 const Patient = require('../models/Patient')
 const User = require('../models/User')
-const Case = require('../models/Case')
 const asyncHandler = require('express-async-handler')
 
 // @desc Get all patients
@@ -11,21 +10,14 @@ const getAllPatients = asyncHandler(async (req, res) => {
     if (!patients?.length) {
         return res.status(400).json({ message: 'No patients found' })
     }
-    
-    // Add assigned users to patient before sending
-    const patientsWithAssignedUsers = await Promise.all(patients.map(async (patient) => {
-        const assignedUsers = (await User.find({ _id: { $in: patient.assignedUsers }}).lean().exec()).map(user => user.username)
-        return { ...patient, assignedUsers }
-    }))
-    console.log("getallpatients", patientsWithAssignedUsers)
-    res.json(patientsWithAssignedUsers)
+    res.json(patients)
 })
 
 // @desc Create new patient
 // @route POST /patients
 // @access Private
 const createPatient = asyncHandler(async (req, res) => {
-    const { name, birthday, history, assignedUsers } = req.body
+    const { name, birthday } = req.body
     // Confirm data
     if (!name || !birthday) {
         return res.status(400).json({ message: 'Required fields missing' })
@@ -39,7 +31,7 @@ const createPatient = asyncHandler(async (req, res) => {
     }
 
     // Create and store new patient
-    const patient = await Patient.create({ name, birthday, history, assignedUsers })
+    const patient = await Patient.create({ name, birthday })
 
     if (patient) {
         return res.status(201).json({ message: `New patient ${name} created`})
@@ -52,10 +44,10 @@ const createPatient = asyncHandler(async (req, res) => {
 // @route PATCH /patients
 // @access Private
 const updatePatient = asyncHandler(async (req, res) => {
-    const { id, name, birthday, assignedUsers, history } = req.body
+    const { id, name, birthday } = req.body
 
     // Confirm data
-    if (!id || !username || !Array.isArray(history) || !history.length || !Array.isArray(assignedUsers) || !assignedUsers.length) {
+    if (!id || !username ) {
         return res.status(400).json({ message: 'All fields are required' })
     }
 
@@ -74,8 +66,6 @@ const updatePatient = asyncHandler(async (req, res) => {
 
     patient.name = name
     patient.birthday = birthday
-    patient.history = history
-    patient.assignedUsers = assignedUsers
 
     const updatedPatient = await patient.save()
 

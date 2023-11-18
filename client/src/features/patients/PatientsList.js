@@ -38,7 +38,7 @@ const PatientsList = () => {
                         <th scope='col' className='table__th user__username'>Birthday</th>
                         <th scope='col' className='table__th user__roles'>Assigned users</th>
                         <th scope='col' className='table__th user__edit'>View history</th>
-                        <th scope='col' className='table__th user__edit'>Edit</th>
+                        <th scope='col' className='table__th user__edit'>View/Edit</th>
                     </tr>
                 </thead>
                 <tbody>

@@ -3,9 +3,9 @@ import { useAddPatientMutation } from './patientsApiSlice'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSave } from '@fortawesome/free-solid-svg-icons'
-const PATH_REGEX = /^\/dash\/patients(\/)?$/
+const PATH_REGEX = /^\/dash\/patients(\/)/
 
-const NewPatientForm = ({ users }) => {
+const NewPatientForm = ({ inCaseForm, onHiddenChanged }) => {
     const [addPatient, {
         isLoading,
         isSuccess,
@@ -15,55 +15,35 @@ const NewPatientForm = ({ users }) => {
 
     const navigate = useNavigate()
     const { pathname } = useLocation()
-
     const [name, setName] = useState('')
-    const [birthday, setBirthday] = useState(new Date(0))
-    const [assignedUsers, setAssignedUsers] = useState([])
-
+    const [birthday, setBirthday] = useState(new Date().toISOString().split("T")[0])
+    
     useEffect(() => {
-        if (PATH_REGEX.test(pathname) && isSuccess) {
-            console.log("success")
+        if (isSuccess && PATH_REGEX.test(pathname)) {
             setName('')
-            setBirthday(new Date(0))
-            setAssignedUsers([])
+            setBirthday(new Date().toISOString().split("T")[0])
             navigate('/dash/patients')
         }
         if (isSuccess) {
-            console.log("success,")
             setName('')
-            setBirthday(new Date(0))
-            setAssignedUsers([])
-            navigate('/dash/patients')
+            setBirthday(new Date().toISOString().split("T")[0])
         }
     }, [isSuccess, navigate, pathname])
 
     const onNameChanged = e => setName(e.target.value)
     const onBirthdayChanged = e => setBirthday(e.target.value)
-    const onAssignedUsersChanged = e => {
-        const values = Array.from(
-            e.target.selectedOptions,
-            (option) => option.value
-        )
-        setAssignedUsers(values)
-    }
 
     const canSave = [name, birthday].every(Boolean) && !isLoading
 
     const onSaveClicked = async (e) => {
         e.preventDefault()
         if (canSave) {
-            await addPatient({ name, birthday, assignedUsers })
+            await addPatient({ name, birthday })
+            if (inCaseForm) {
+                onHiddenChanged()
+            }
         }
     }
-
-    const options = users.map(user => {
-        return user.active ? (
-            <option 
-                key={user.id}
-                value={user.id}
-            > {user.username}</option>
-        ) : null
-    })
 
     const dateMax = new Date().toISOString().split("T")[0]
 
@@ -111,23 +91,9 @@ const NewPatientForm = ({ users }) => {
                     value={birthday}
                     onChange={onBirthdayChanged}
                 />
-                <label className='form__label' htmlFor='assignedUsers'>
-                    Assigned to patient:
-                </label>
-                <select 
-                    id='assignedUsers'
-                    name='assignedUsers'
-                    className='form__select'
-                    multiple={true}
-                    size='3'
-                    value={assignedUsers}
-                    onChange={onAssignedUsersChanged}
-                >
-                    {options}
-                </select>
             </form>
         </>
-    )
+    ) 
 
     return content
 }
