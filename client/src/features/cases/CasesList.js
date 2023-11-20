@@ -1,7 +1,11 @@
 import { useGetCasesQuery } from './casesApiSlice'
 import Case from './Case'
+import useAuth from '../../hooks/useAuth'
 
 const CasesList = () => {
+
+    const { id, isManager, isAdmin } = useAuth()
+
     const {
         data: cases,
         isLoading,
@@ -23,11 +27,18 @@ const CasesList = () => {
     }
 
     if (isSuccess) {
-        const { ids } = cases
+        const { ids, entities } = cases
 
-        const tableContent = ids?.length
-            ? ids.map(caseId => <Case key={caseId} caseId={caseId} />)
-            : null
+        console.log("id: ", id)
+        let filteredIds
+        if (isManager || isAdmin) {
+            filteredIds = [...ids]
+        } else {
+            ids.map(caseId => console.log(entities[caseId].users))
+            filteredIds = ids.filter(caseId => entities[caseId].users.includes(id))
+        }
+
+        const tableContent = ids?.length && filteredIds.map(caseId => <Case key={caseId} caseId={caseId} />)
 
         content = (
             <table className="table table--cases">

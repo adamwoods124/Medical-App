@@ -33,6 +33,11 @@
   margin-bottom: 0.5em;
 }
 
+.errmsg a:any-link {
+  color: var(--ERROR);
+  text-decoration: underline;
+}
+
 .nowrap {
   white-space: nowrap;
 }
@@ -143,6 +148,10 @@ a:focus-visible {
   flex-flow: row nowrap;
   justify-content: space-between;
   align-items: center;
+}
+
+.dash-header__container--small {
+  max-width: 800px;
 }
 
 .dash-header__nav {
