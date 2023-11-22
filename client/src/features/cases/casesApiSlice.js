@@ -10,15 +10,17 @@ const initialState = casesAdapter.getInitialState()
 export const casesApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
         getCases: builder.query({
-            query: () => '/cases',
-            validateStatus: (response, result) => {
-                return response.status === 200 && !result.isError
-            },
+            query: () => ({
+                url: '/cases',
+                validateStatus: (response, result) => {
+                    return response.status === 200 && !result.isError
+                },
+            }),
             transformResponse: responseData => {
                 const loadedCases = responseData.map(_case => {
                     _case.id = _case._id
                     return _case
-                });
+                })
                 return casesAdapter.setAll(initialState, loadedCases)
             },
             providesTags: (result, error, arg) => {

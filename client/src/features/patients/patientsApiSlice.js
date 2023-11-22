@@ -11,10 +11,12 @@ const initialState = patientsAdapter.getInitialState()
 export const patientsApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
         getPatients: builder.query({
-            query: () => '/patients',
-            validateStatus: (response, result) => {
-                return response.status === 200 && !result.isError
-            },
+            query: () => ({
+                url: '/patients',
+                validateStatus: (response, result) => {
+                    return response.status === 200 && !result.isError
+                },
+            }),
             transformResponse: responseData => {
                 const loadedPatients = responseData.map(patient => {
                     patient.id = patient._id

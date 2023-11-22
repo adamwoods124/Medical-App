@@ -1,14 +1,25 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons"
 import { useNavigate, Link } from 'react-router-dom'
-import { useSelector } from 'react-redux'
-import { selectPatientById } from './patientsApiSlice'
-import { selectAllCases } from '../cases/casesApiSlice'
+import { useGetPatientsQuery } from './patientsApiSlice'
+import { useGetCasesQuery } from '../cases/casesApiSlice'
+import { memo } from 'react'
 
 
 const Patient = ({ patientId }) => {
-    const patient = useSelector(state => selectPatientById(state, patientId))
-    const cases = useSelector(selectAllCases)
+
+    const { patient } = useGetPatientsQuery('patientsList', {
+        selectFromResult: ({ data }) => ({
+            patient: data?.entities[patientId]
+        })
+    })
+
+    
+    const { cases } = useGetCasesQuery('casesList', {
+        selectFromResult: ({ data }) => ({
+            cases: data?.ids.map(id => data?.entities[id])
+        })
+    })
 
     const navigate = useNavigate()
 
@@ -19,7 +30,7 @@ const Patient = ({ patientId }) => {
         
         const patientHistory = cases.map(_case => {
             return _case.patient === patientId ? (
-            <li>
+            <li key={_case.id}>
                 <Link to={"/dash/cases/" + _case.id} key={_case.id} className='table__cell-caselink'>
                 {new Date(_case.createdAt).toISOString().split('T')[0]}: {_case.symptoms}
                 </Link>
@@ -59,4 +70,6 @@ const Patient = ({ patientId }) => {
 
     } else return null
 }
-export default Patient
+
+const memoizedPatient = memo(Patient)
+export default memoizedPatient

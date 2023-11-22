@@ -1,14 +1,23 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons"
 import { useNavigate } from 'react-router-dom'
-
-import { useSelector } from 'react-redux'
-import { selectCaseById } from './casesApiSlice'
-import { selectPatientById } from '../patients/patientsApiSlice'
+import { useGetCasesQuery } from './casesApiSlice'
+import { useGetPatientsQuery } from '../patients/patientsApiSlice'
+import { memo } from 'react'
 
 const Case = ({ caseId }) => {
-    const _case = useSelector(state => selectCaseById(state, caseId))
-    const patient = useSelector(state => selectPatientById(state, _case?.patient))
+
+    const { _case } = useGetCasesQuery('casesList', {
+        selectFromResult: ({ data }) => ({
+            _case: data?.entities[caseId]
+        })
+    })
+    const { patient } = useGetPatientsQuery('patientsList', {
+        selectFromResult: ({ data }) => ({
+            patient: data?.entities[_case?.patient]
+        })
+    })
+
     const navigate = useNavigate()
 
     if (!_case || !patient) return null
@@ -46,4 +55,5 @@ const Case = ({ caseId }) => {
         </tr>
     )
 }
-export default Case
+const memoizedCase = memo(Case)
+export default memoizedCase

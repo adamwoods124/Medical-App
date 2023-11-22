@@ -1,7 +1,11 @@
 import { useGetPatientsQuery } from './patientsApiSlice'
 import Patient from './Patient'
+import PulseLoader from 'react-spinners/PulseLoader'
+import useTitle from '../../hooks/useTitle'
 
 const PatientsList = () => {
+    useTitle('Elm St. Hospital - Patients List')
+
     const {
         data: patients,
         isLoading,
@@ -16,7 +20,7 @@ const PatientsList = () => {
     
     let content
 
-    if (isLoading) content = <p>Loading...</p>
+    if (isLoading) content = <PulseLoader color='#FFF' />
 
     if (isError) {
         console.log(error)

@@ -3,9 +3,12 @@ import { useUpdateCaseMutation, useDeleteCaseMutation } from './casesApiSlice'
 import { useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSave, faTrashCan } from '@fortawesome/free-solid-svg-icons'
+import useAuth from '../../hooks/useAuth'
 
 const EditCaseForm = ({ _case, users, patients }) => {
     
+    const { isManager, isAdmin } = useAuth()
+
     const [updateCase, {
         isLoading,
         isSuccess,
@@ -88,11 +91,24 @@ const EditCaseForm = ({ _case, users, patients }) => {
         )
     })
 
-
+    const isAdminClass = (isAdmin || isManager) ? "" : "hidden"
     const errClass = (isError || isDelError) ? "errmsg" : "offscreen"
     //const validTitleClass = !title ? 'form__input--incomplete' : ''
 
     const errContent = (error?.data?.message || delerror?.data?.message) ?? ''
+
+    let deleteButton = null
+    if (isManager || isAdmin) {
+        deleteButton = (
+            <button 
+                className='icon-button'
+                title="Delete"
+                onClick={onDeleteClicked}
+            >
+                <FontAwesomeIcon icon={faTrashCan} />
+            </button>
+        )
+    }
 
     const content = (
         <>
@@ -110,13 +126,7 @@ const EditCaseForm = ({ _case, users, patients }) => {
                         >
                             <FontAwesomeIcon icon={faSave} />
                         </button>
-                        <button
-                            className="icon-button"
-                            title="Delete"
-                            onClick={onDeleteClicked}
-                        >
-                            <FontAwesomeIcon icon={faTrashCan} />
-                        </button>
+                        {deleteButton}
                     </div>
                 </div>
                 <label className='form__label' htmlFor='patient'>
@@ -181,12 +191,12 @@ const EditCaseForm = ({ _case, users, patients }) => {
                             />
                         </label>
                             
-                        <label className="form__label" htmlFor="usernames">
+                        <label className={`form__label ${isAdminClass}`} htmlFor="usernames">
                             Assigned to:</label>
                         <select
                             id="usernames"
                             name="usernames"
-                            className={`form__select ${validUsernamesClass}`}
+                            className={`form__select ${validUsernamesClass} ${isAdminClass}`}
                             size="4"
                             multiple={true}
                             value={usernames}

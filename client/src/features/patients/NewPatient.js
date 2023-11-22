@@ -1,12 +1,20 @@
-import { useSelector } from "react-redux";
-import { selectAllUsers } from "../users/usersApiSlice";
-import NewPatientForm from "./NewPatientForm";
+import useTitle from "../../hooks/useTitle"
+import { useGetUsersQuery } from "../users/usersApiSlice"
+import NewPatientForm from "./NewPatientForm"
+import PulseLoader from "react-spinners/PulseLoader"
 
 const NewPatient = () => {
-    const users = useSelector(selectAllUsers)
-    if (!users?.length) return <p>Not currently available</p>
+    useTitle('Elm St. Hospital - New Patient')
 
-    const content = <NewPatientForm users={users} />
+    const { users } = useGetUsersQuery('usersList', {
+        selectFromResult: ({ data }) => ({
+            users: data?.ids.map(id => data?.entities[id])
+        })
+    })
+
+    if (!users?.length) return <PulseLoader color="#FFF" />
+
+    const content = <NewPatientForm />
 
     return content
 }

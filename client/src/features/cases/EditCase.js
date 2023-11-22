@@ -1,18 +1,46 @@
 import { useParams } from 'react-router-dom'
-import { useSelector } from 'react-redux'
-import { selectCaseById } from './casesApiSlice'
-import { selectAllUsers } from '../users/usersApiSlice'
 import EditCaseForm from './EditCaseForm'
-import { selectAllPatients } from '../patients/patientsApiSlice'
+import { useGetCasesQuery } from './casesApiSlice'
+import { useGetUsersQuery } from '../users/usersApiSlice'
+import { useGetPatientsQuery } from '../patients/patientsApiSlice'
+import useAuth from '../../hooks/useAuth'
+import PulseLoader from 'react-spinners/PulseLoader'
+import useTitle from '../../hooks/useTitle'
 
 const EditCase = () => {
+    useTitle('Elm St. Hospital - Edit Case')
     const { id } = useParams()
 
-    const _case = useSelector(state => selectCaseById(state, id))
-    const users = useSelector(selectAllUsers)
-    const patients = useSelector(selectAllPatients)
+    const { id: userId, isManager, isAdmin } = useAuth() 
 
-    const content = _case && users ? <EditCaseForm _case={_case} users={users} patients={patients}/> : <p>Loading...</p>
+    const { _case } = useGetCasesQuery('casesList', {
+        selectFromResult: ({ data }) => ({
+            _case: data?.entities[id]
+        })
+    })
+
+
+    const { users } = useGetUsersQuery('usersList', {
+        selectFromResult: ({ data }) => ({
+            users: data?.ids.map(id => data?.entities[id])
+        })
+    })
+
+    const { patients } = useGetPatientsQuery('patientsList', {
+        selectFromResult: ({ data }) => ({
+            patients: data?.ids.map(id => data?.entities[id])
+        })
+    })
+
+    if (!_case || !users?.length || !patients?.length) return <PulseLoader color={"#FFF"} />
+
+    if (!isManager && !isAdmin) {
+        if (!_case.users.includes(userId)) {
+            return <p className='errmsg'>Unauthorized</p>
+        }
+    }
+    
+    const content = <EditCaseForm _case={_case} users={users} patients={patients}/> 
     return content
 }
 export default EditCase

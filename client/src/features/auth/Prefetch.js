@@ -7,17 +7,9 @@ import { Outlet } from 'react-router-dom'
 
 const Prefetch = () => {
     useEffect(() => {
-        console.log('subscribing')
-        const cases = store.dispatch(casesApiSlice.endpoints.getCases.initiate())
-        const users = store.dispatch(usersApiSlice.endpoints.getUsers.initiate())
-        const patients = store.dispatch(patientsApiSlice.endpoints.getPatients.initiate())
-
-        return () => {
-            console.log('unsubscribing')
-            cases.unsubscribe()
-            users.unsubscribe()
-            patients.unsubscribe()
-        }
+        store.dispatch(casesApiSlice.util.prefetch('getCases', 'casesList', { force: true }))
+        store.dispatch(usersApiSlice.util.prefetch('getUsers', 'usersList', { force: true }))
+        store.dispatch(patientsApiSlice.util.prefetch('getPatients', 'patientsList', { force: true }))
     }, [])
     return <Outlet />
 }

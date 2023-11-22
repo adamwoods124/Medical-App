@@ -1,9 +1,12 @@
 import { useGetCasesQuery } from './casesApiSlice'
 import Case from './Case'
 import useAuth from '../../hooks/useAuth'
+import PulseLoader from 'react-spinners/PulseLoader'
+import useTitle from '../../hooks/useTitle'
 
 const CasesList = () => {
 
+    useTitle('Elm St. Hospital - Cases List')
     const { id, isManager, isAdmin } = useAuth()
 
     const {
@@ -20,7 +23,7 @@ const CasesList = () => {
 
     let content
 
-    if (isLoading) content = <p>Loading...</p>
+    if (isLoading) content = <PulseLoader color="#FFF" />
 
     if (isError) {
         content = <p className='errmsg'>{error?.data?.message}</p>
@@ -29,17 +32,15 @@ const CasesList = () => {
     if (isSuccess) {
         const { ids, entities } = cases
 
-        console.log("id: ", id)
         let filteredIds
         if (isManager || isAdmin) {
             filteredIds = [...ids]
         } else {
-            ids.map(caseId => console.log(entities[caseId].users))
-            filteredIds = ids.filter(caseId => entities[caseId].users.includes(id))
+            filteredIds = ids.filter(caseId => entities[caseId].users?.includes(id))
         }
 
         const tableContent = ids?.length && filteredIds.map(caseId => <Case key={caseId} caseId={caseId} />)
-
+        
         content = (
             <table className="table table--cases">
                 <thead className="table__thead">

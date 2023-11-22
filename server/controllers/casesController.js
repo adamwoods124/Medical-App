@@ -1,11 +1,10 @@
 const User = require('../models/User')
 const Case = require('../models/Case')
-const asyncHandler = require('express-async-handler')
 
 // @desc Get all cases
 // @route GET /cases
 // @access Private
-const getAllCases = asyncHandler(async (req, res) => {
+const getAllCases = async (req, res) => {
     const cases = await Case.find().lean()
     if (!cases?.length) {
         return res.status(400).json({ message: 'No cases found' })
@@ -17,12 +16,12 @@ const getAllCases = asyncHandler(async (req, res) => {
         return { ..._case, usernames}
     }))
     res.json(casesWithUsername)
-})
+}
 
 // @desc Create new case
 // @route POST /cases
 // @access Private
-const createCase = asyncHandler(async (req, res) => {
+const createCase = async (req, res) => {
     const { users, patient, roomNum, symptoms, notes } = req.body
     // Confirm data
     if (!users || !patient || !roomNum ) {
@@ -45,12 +44,12 @@ const createCase = asyncHandler(async (req, res) => {
         return res.status(400).json({ message: 'Invalid case data received' })
     }
 
-})
+}
 
 // @desc Update a case
 // @route PATCH /case
 // @access Private
-const updateCase = asyncHandler(async (req, res) => {
+const updateCase = async (req, res) => {
     const { id, users, patient, roomNum, symptoms, notes, completed } = req.body
 
     // Confirm data
@@ -81,12 +80,12 @@ const updateCase = asyncHandler(async (req, res) => {
     const updatedCase = await _case.save()
 
     res.json({ message: `Info for patient in room ${roomNum} updated`})
-})
+}
 
 // @desc Delete a case
 // @route DELETE /cases
 // @access Private
-const deleteCase = asyncHandler(async (req, res) => {
+const deleteCase = async (req, res) => {
     const { id } = req.body
 
     // Make sure note exists
@@ -109,6 +108,6 @@ const deleteCase = asyncHandler(async (req, res) => {
     }
 
     res.json(reply)
-})
+}
 
 module.exports = { getAllCases, createCase, updateCase, deleteCase }

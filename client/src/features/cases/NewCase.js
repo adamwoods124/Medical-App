@@ -1,12 +1,23 @@
-import { useSelector } from 'react-redux'
-import { selectAllUsers } from '../users/usersApiSlice'
 import NewCaseForm from './NewCaseForm'
-import { selectAllPatients } from '../patients/patientsApiSlice'
+import { useGetUsersQuery } from '../users/usersApiSlice'
+import { useGetPatientsQuery } from '../patients/patientsApiSlice'
+import PulseLoader from 'react-spinners/PulseLoader'
+import useTitle from '../../hooks/useTitle'
 
 const NewCase = () => {
-    const users = useSelector(selectAllUsers)
-    const patients = useSelector(selectAllPatients)
-    if (!users?.length) return <p>Not currently available</p>
+    useTitle('Elm St. Hospital - New Case')
+    const { users } = useGetUsersQuery('usersList', {
+        selectFromResult: ({ data }) => ({
+            users: data?.ids.map(id => data?.entities[id])
+        })
+    })
+    const { patients } = useGetPatientsQuery('patientsList', {
+        selectFromResult: ({ data }) => ({
+            patients: data?.ids.map(id => data?.entities[id])
+        })
+    })
+
+    if (!users?.length || !patients?.length) return <PulseLoader color={"#FFF"} />
 
     const content =  <NewCaseForm users={users} patients={patients}/> 
 
