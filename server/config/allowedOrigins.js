@@ -1,5 +1,5 @@
 const allowedOrigins = [
-    'http://localhost:3000'
+    'https://aw-medapp.onrender.com'
 ]
 
 module.exports = allowedOrigins
