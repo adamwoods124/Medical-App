@@ -99,6 +99,16 @@ const Login = () => {
                         Trust this device
                     </label>
                 </form>
+                <br />
+                <div>
+                    <h3>Test users for demo purposes:</h3>
+                        
+                        Admin: username and password both "admin"
+                        <br />
+                        Normal user permissions: username and password both "user"
+                        <br />
+                        Only admin can create new users if you want to make a new user
+                </div>
             </main>
             <footer>
                 <Link to='/'>Back to home</Link>
